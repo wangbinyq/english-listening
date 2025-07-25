@@ -5,19 +5,22 @@
 2. **Build Tool**: Vite 7
 3. **Language**: TypeScript (~5.8.3)
 4. **Styling**: CSS Modules (using existing CSS files)
-5. **Routing**: React Router (to be added)
+5. **Routing**: React Router v7
 6. **Database**: pglite (PostgreSQL-compatible local database)
 7. **Audio Handling**: HTML5 Audio API
-8. **Text Diffing**: Custom implementation or library (to be determined)
+8. **Text Diffing**: diff library for word-based text comparison
 9. **Linting**: ESLint with TypeScript ESLint plugin
 10. **Development Server**: Vite's built-in development server
+11. **Backend Proxy**: Deno server for bypassing CORS restrictions
 
 ## Development Setup
 1. **Node.js**: Required for running the development environment
 2. **npm**: Package manager for installing dependencies
-3. **Development Server**: Run with `npm run dev` to start the Vite development server
-4. **Build Process**: Run with `npm run build` to create a production build
-5. **Linting**: Run with `npm run lint` to check for code issues
+3. **Deno**: Required for running the backend proxy server
+4. **Development Server**: Run with `npm run dev` to start the Vite development server
+5. **Backend Server**: Run with `npm run server` to start the Deno proxy server
+6. **Build Process**: Run with `npm run build` to create a production build
+7. **Linting**: Run with `npm run lint` to check for code issues
 
 ## Technical Constraints
 1. **Browser Compatibility**: Modern browsers that support ES2022 and HTML5 Audio API
@@ -30,6 +33,9 @@
 ### Production Dependencies
 - `react`: ^19.1.0 - Core React library
 - `react-dom`: ^19.1.0 - React DOM rendering library
+- `react-router-dom`: ^7.7.1 - Routing library for React
+- `@electric-sql/pglite`: ^0.3.5 - PostgreSQL-compatible local database
+- `diff`: ^8.0.2 - Text diffing library
 
 ### Development Dependencies
 - `@vitejs/plugin-react`: ^4.5.2 - React plugin for Vite
@@ -47,6 +53,7 @@
 ## Tool Usage Patterns
 1. **Development Workflow**: 
    - Run `npm run dev` to start development server
+   - Run `npm run server` to start the backend proxy server
    - Code changes are hot-reloaded automatically
    - Run `npm run lint` to check for issues
    - Run `npm run build` to create production build

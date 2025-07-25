@@ -5,42 +5,58 @@ The application follows a standard React + Vite architecture with TypeScript for
 
 ## Source Code Paths
 - `src/` - Main source code directory
-  - `App.tsx` - Main application component
+  - `App.tsx` - Main application component with routing
   - `main.tsx` - Application entry point
-  - `components/` - Reusable UI components (to be created)
-  - `pages/` - Page components for different views (to be created)
-  - `hooks/` - Custom React hooks (to be created)
-  - `utils/` - Utility functions (to be created)
-  - `types/` - TypeScript type definitions (to be created)
-  - `services/` - Business logic and data handling (to be created)
+  - `components/` - Reusable UI components
+    - `Modal.tsx` - Generic modal component
+    - `DiffResultDialog.tsx` - Dialog for displaying diff results
+  - `pages/` - Page components for different views
+    - `DictationPage.tsx` - Main page for dictation exercises
+    - `HistoryPage.tsx` - Page for viewing dictation history
+  - `hooks/` - Custom React hooks
+    - `useAudioPlayer.ts` - Hook for audio playback functionality
+    - `useContentExtractor.ts` - Hook for extracting content from URLs
+    - `useDictationTimer.ts` - Hook for tracking dictation time
+  - `utils/` - Utility functions
+    - `textDiff.ts` - Text comparison and diffing utilities
+  - `types/` - TypeScript type definitions
+    - `index.ts` - Dictation record type definition
+  - `services/` - Business logic and data handling
+    - `database.ts` - Database service using pglite
 
 ## Key Technical Decisions
-1. **Client-Side Database**: Using pglite for local storage of dictation records
-2. **Audio Handling**: Using HTML5 Audio API for audio playback
-3. **Text Diffing**: Implementing a text comparison algorithm for scoring
-4. **State Management**: Using React's built-in state management (useState, useContext) for simplicity
+1. **Client-Side Database**: Using pglite for local storage of dictation records with IndexedDB persistence
+2. **Audio Handling**: Using HTML5 Audio API for audio playback with custom React hook
+3. **Text Diffing**: Using the `diff` library for word-based text comparison and scoring
+4. **State Management**: Using React's built-in state management (useState, useEffect, useRef) for simplicity
 5. **Routing**: Using React Router for navigation between pages
+6. **Content Extraction**: Using a backend proxy to bypass CORS restrictions when fetching content
 
 ## Design Patterns in Use
 1. **Component-Based Architecture**: Breaking UI into reusable components
-2. **Single Responsibility Principle**: Each component/function has a single purpose
+2. **Single Responsibility Principle**: Each component/hook/service has a single purpose
 3. **Separation of Concerns**: Separating UI, business logic, and data handling
 4. **Hooks Pattern**: Using React hooks for state and side effects
+5. **Custom Hooks**: Encapsulating reusable logic in custom hooks
 
 ## Component Relationships
 - `App` - Root component that handles routing
   - `DictationPage` - Main page for dictation exercises
-    - `AudioPlayer` - Component for audio playback
-    - `TextInput` - Component for dictation input
-    - `SubmitButton` - Component for submitting answers
-    - `ScoreDisplay` - Component for showing results
+    - `useAudioPlayer` hook - Handles audio playback functionality
+    - `useContentExtractor` hook - Handles content extraction from URLs
+    - `useDictationTimer` hook - Tracks time spent on dictation
+    - `textDiff` utilities - Calculates similarity score and generates diff view
+    - `dbService` - Saves and retrieves dictation records
   - `HistoryPage` - Page for viewing dictation history
-    - `RecordList` - Component for displaying past attempts
-    - `RecordItem` - Component for individual record display
+    - `dbService` - Retrieves dictation records for display
+    - `DiffResultDialog` - Shows detailed diff results in a modal
+      - `Modal` - Generic modal component
+  - `Modal` - Generic reusable modal component
 
 ## Critical Implementation Paths
-1. **Audio Handling**: Implementing reliable audio playback from URLs
-2. **Text Diffing Algorithm**: Creating an accurate scoring mechanism
-3. **Local Database Integration**: Setting up pglite for data persistence
-4. **User Interface**: Creating an intuitive and responsive UI
-5. **State Management**: Managing application state effectively
+1. **Audio Handling**: Implementing reliable audio playback from URLs with custom controls
+2. **Text Diffing Algorithm**: Creating an accurate scoring mechanism using the diff library
+3. **Local Database Integration**: Setting up pglite for data persistence with proper schema
+4. **Content Extraction**: Implementing a backend proxy to bypass CORS restrictions
+5. **User Interface**: Creating an intuitive and responsive UI with proper state management
+6. **Timer Functionality**: Implementing an accurate timer that handles page visibility changes
