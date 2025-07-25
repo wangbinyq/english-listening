@@ -80,9 +80,6 @@ export const DictationPage = () => {
       };
 
       await dbService.addRecord(record);
-
-      // Show success message
-      alert(`Your score: ${calculatedScore.toFixed(2)}%`);
     } catch (err) {
       console.error('Error submitting dictation:', err);
       setError('Failed to submit dictation. Please try again.');
