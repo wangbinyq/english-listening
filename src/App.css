@@ -5,15 +5,49 @@
   text-align: center;
 }
 
+.navigation {
+  margin-bottom: 2rem;
+}
+
+.navigation ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.navigation li a {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.25s, color 0.25s;
+}
+
+.navigation li a:hover {
+  color: #535bf2;
+  background-color: rgba(100, 108, 255, 0.1);
+}
+
+.navigation li a.active {
+  background-color: #646cff;
+  color: white;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -39,4 +73,235 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Dictation Page Styles */
+.dictation-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.dictation-page h1 {
+  margin-bottom: 2rem;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.input-group input,
+.input-group textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.input-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.input-group textarea[readonly] {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.hidden-text {
+  padding: 1rem;
+  background-color: #f0f0f0;
+  border: 1px dashed #ccc;
+  border-radius: 0.25rem;
+  text-align: center;
+  color: #666;
+}
+
+.audio-controls {
+  margin: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.audio-controls button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid transparent;
+  background-color: #1a1a1a;
+  color: white;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+.audio-controls button:hover {
+  border-color: #646cff;
+}
+
+.audio-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.seek-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.seek-bar {
+  flex: 1;
+  height: 0.5rem;
+}
+
+.submit-section {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.submit-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  background-color: #646cff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #535bf2;
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.show-original-button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid #646cff;
+  background-color: transparent;
+  color: #646cff;
+  cursor: pointer;
+  transition: background-color 0.25s, color 0.25s;
+}
+
+.show-original-button:hover {
+  background-color: #646cff;
+  color: white;
+}
+
+.score-display {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: #f0f8ff;
+  border-radius: 0.5rem;
+  border: 1px solid #646cff;
+}
+
+.error-message {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 0.25rem;
+  border: 1px solid #ffcdd2;
+}
+
+/* History Page Styles */
+.history-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.history-page h1 {
+  margin-bottom: 2rem;
+}
+
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.record-item {
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  background-color: #f9f9f9;
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.record-score {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.record-date {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.record-content {
+  margin-bottom: 1rem;
+}
+
+.record-text {
+  margin-bottom: 1rem;
+}
+
+.record-text h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+}
+
+.record-text p {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.record-actions {
+  text-align: right;
+}
+
+.delete-button {
+  padding: 0.5rem 1rem;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
 }
