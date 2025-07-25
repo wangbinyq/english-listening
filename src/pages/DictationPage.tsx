@@ -96,18 +96,20 @@ export const DictationPage = () => {
       <h1>English Dictation</h1>
 
       <div className="url-section">
-        <div className="input-group">
+        <div className="input-group url-input-group">
           <label htmlFor="url">Page URL:</label>
-          <input
-            type="text"
-            id="url"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="Enter page URL"
-          />
-          <button onClick={handleLoadContent} disabled={isLoading}>
-            {isLoading ? 'Loading...' : 'Load Content'}
-          </button>
+          <div className="url-input-row">
+            <input
+              type="text"
+              id="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="Enter page URL"
+            />
+            <button onClick={handleLoadContent} disabled={isLoading}>
+              {isLoading ? 'Loading...' : 'Load Content'}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -160,9 +162,9 @@ export const DictationPage = () => {
       )}
 
       <div className="text-section">
-        <div className="input-group">
-          <label htmlFor="originalText">Original Text:</label>
-          {showOriginal ? (
+        {originalText && showOriginal && (
+          <div className="input-group">
+            <label htmlFor="originalText">Original Text:</label>
             <textarea
               id="originalText"
               value={originalText}
@@ -171,12 +173,8 @@ export const DictationPage = () => {
               rows={5}
               readOnly
             />
-          ) : (
-            <div className="hidden-text">
-              <p>Original text is hidden. Submit your transcription to see the original text.</p>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className="input-group">
           <label htmlFor="userText">Your Transcription:</label>
