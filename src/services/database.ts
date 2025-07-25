@@ -8,6 +8,8 @@ interface DictationRecordRow {
   user_text: string;
   score: number;
   created_at: string;
+  title: string;
+  description: string;
 }
 
 class DatabaseService {
@@ -32,7 +34,9 @@ class DatabaseService {
           original_text TEXT NOT NULL,
           user_text TEXT NOT NULL,
           score REAL NOT NULL,
-          created_at TIMESTAMP NOT NULL
+          created_at TIMESTAMP NOT NULL,
+          title TEXT NOT NULL DEFAULT '',
+          description TEXT NOT NULL DEFAULT ''
         )
       `);
 
@@ -52,9 +56,9 @@ class DatabaseService {
     const createdAt = new Date().toISOString();
 
     await this.db!.query(
-      `INSERT INTO dictation_records (id, audio_url, original_text, user_text, score, created_at)
-       VALUES ($1, $2, $3, $4, $5, $6)`,
-      [id, record.audioUrl, record.originalText, record.userText, record.score, createdAt]
+      `INSERT INTO dictation_records (id, audio_url, original_text, user_text, score, created_at, title, description)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      [id, record.audioUrl, record.originalText, record.userText, record.score, createdAt, record.title, record.description]
     );
 
     return id;
@@ -75,7 +79,9 @@ class DatabaseService {
       originalText: row.original_text,
       userText: row.user_text,
       score: row.score,
-      createdAt: new Date(row.created_at)
+      createdAt: new Date(row.created_at),
+      title: row.title,
+      description: row.description
     }));
   }
 
@@ -100,7 +106,9 @@ class DatabaseService {
       originalText: row.original_text,
       userText: row.user_text,
       score: row.score,
-      createdAt: new Date(row.created_at)
+      createdAt: new Date(row.created_at),
+      title: row.title,
+      description: row.description
     };
   }
 

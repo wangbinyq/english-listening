@@ -119,6 +119,30 @@
   font-family: inherit;
 }
 
+.title-section {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.title-section h2 {
+  margin: 0;
+  color: #333;
+}
+
+.description-section {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 0.25rem;
+  text-align: left;
+}
+
+.description-section p {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
 .input-group textarea {
   resize: vertical;
   min-height: 100px;
@@ -344,6 +368,26 @@
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #eee;
+}
+
+.record-title h3 {
+  margin: 0;
+  color: #333;
+  text-align: left;
+}
+
+.record-description {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: #f0f0f0;
+  border-radius: 0.25rem;
+}
+
+.record-description p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .record-score {

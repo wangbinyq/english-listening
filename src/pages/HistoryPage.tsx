@@ -72,6 +72,9 @@ export const HistoryPage = () => {
           {records.map(record => (
             <div key={record.id} className="record-item">
               <div className="record-header">
+                <div className="record-title">
+                  <h3>{record.title}</h3>
+                </div>
                 <div className="record-score">
                   Score: <strong>{record.score.toFixed(2)}%</strong>
                 </div>
@@ -79,6 +82,11 @@ export const HistoryPage = () => {
                   {formatDate(record.createdAt)}
                 </div>
               </div>
+              {record.description && (
+                <div className="record-description">
+                  <p>{record.description}</p>
+                </div>
+              )}
 
               <div className="record-content">
                 <div className="record-text">

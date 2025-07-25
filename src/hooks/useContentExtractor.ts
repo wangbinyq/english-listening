@@ -3,11 +3,15 @@ import { useState } from 'react';
 interface ExtractedContent {
   audioUrl: string;
   originalText: string;
+  title: string;
+  description: string;
 }
 
 interface ServerResponse {
   audioUrl: string;
   originalText: string;
+  title: string;
+  description: string;
 }
 
 export const useContentExtractor = () => {
@@ -39,7 +43,9 @@ export const useContentExtractor = () => {
 
       return {
         audioUrl: data.audioUrl,
-        originalText: data.originalText
+        originalText: data.originalText,
+        title: data.title,
+        description: data.description
       };
     } catch (err) {
       const errorMessage = 'Failed to extract content from the provided URL. ' + (err as Error).message;

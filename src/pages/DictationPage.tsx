@@ -9,6 +9,8 @@ export const DictationPage = () => {
   const [url, setUrl] = useState('');
   const [audioUrl, setAudioUrl] = useState('');
   const [originalText, setOriginalText] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [userText, setUserText] = useState('');
   const [score, setScore] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,6 +41,8 @@ export const DictationPage = () => {
     if (extracted) {
       setAudioUrl(extracted.audioUrl);
       setOriginalText(extracted.originalText);
+      setTitle(extracted.title);
+      setDescription(extracted.description);
       loadAudio(extracted.audioUrl);
       setShowOriginal(false); // Hide original text when loading new content
       setScore(null); // Reset score when loading new content
@@ -65,7 +69,9 @@ export const DictationPage = () => {
         originalText,
         userText,
         score: calculatedScore,
-        createdAt: new Date()
+        createdAt: new Date(),
+        title,
+        description
       };
 
       await dbService.addRecord(record);
@@ -112,6 +118,18 @@ export const DictationPage = () => {
           </div>
         </div>
       </div>
+
+      {title && (
+        <div className="title-section">
+          <h2>{title}</h2>
+        </div>
+      )}
+
+      {description && (
+        <div className="description-section">
+          <p>{description}</p>
+        </div>
+      )}
 
       {error && (
         <div className="error-message">

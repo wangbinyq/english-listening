@@ -19,6 +19,8 @@ interface KekenetContentItem {
 }
 
 interface KekenetData {
+  title: string,
+  read_info: string,
   playurl: string;
   content: KekenetContentItem[];
 }
@@ -68,12 +70,14 @@ const fetchKekenetContent = async (id: string): Promise<KekenetResponse> => {
 };
 
 // Extract audio URL and text from kekenet data
-const extractContentFromData = (data: KekenetResponse): { audioUrl: string; originalText: string } => {
+const extractContentFromData = (data: KekenetResponse): { audioUrl: string; originalText: string; title: string; description: string } => {
   if (!data || !data.Data) {
     throw new Error('Invalid data structure');
   }
 
   const audioUrl = data.Data.playurl ? `https://k7.kekenet.com/${data.Data.playurl}` : '';
+  const title = data.Data.title || '';
+  const description = data.Data.read_info || '';
 
   if (!data.Data.content || !Array.isArray(data.Data.content)) {
     throw new Error('No content found');
@@ -84,7 +88,9 @@ const extractContentFromData = (data: KekenetResponse): { audioUrl: string; orig
 
   return {
     audioUrl,
-    originalText
+    originalText,
+    title,
+    description
   };
 };
 
@@ -120,10 +126,10 @@ serve({
         const data = await fetchKekenetContent(id);
 
         // Extract audio URL and text
-        const { audioUrl, originalText } = extractContentFromData(data);
+        const { audioUrl, originalText, title, description } = extractContentFromData(data);
 
         return new Response(
-          JSON.stringify({ audioUrl, originalText }),
+          JSON.stringify({ audioUrl, originalText, title, description }),
           {
             headers: { "Content-Type": "application/json" },
           }

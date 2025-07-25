@@ -5,4 +5,6 @@ export interface DictationRecord {
   userText: string;
   score: number;
   createdAt: Date;
+  title: string;
+  description: string;
 }
