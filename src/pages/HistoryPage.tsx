@@ -75,6 +75,19 @@ export const HistoryPage = () => {
     }
   };
 
+  const handleDeleteGroup = async (kekenetId: string, groupTitle: string) => {
+    const title = groupTitle || `Content ${kekenetId}`;
+    if (window.confirm(`Are you sure you want to delete all records for "${title}"? This will remove all ${groupedRecords.find(g => g.kekenetId === kekenetId)?.group.length || 0} attempts.`)) {
+      try {
+        await dbService.deleteRecordsByKekenetId(kekenetId);
+        setRecords(records.filter(record => record.kekenetId !== kekenetId));
+      } catch (err) {
+        console.error('Error deleting group records:', err);
+        setError('Failed to delete group records');
+      }
+    }
+  };
+
   const handleRedo = (record: DictationRecord) => {
     // Navigate to the dictation page with the record data
     navigate('/', {
@@ -131,9 +144,18 @@ export const HistoryPage = () => {
         <div className="records-list">
           {groupedRecords.map(({ kekenetId, group }) => (
             <div key={kekenetId} className="record-group">
-              <h2 className="record-group-title">
-                {group[0]?.title || `Content ${kekenetId}`}
-              </h2>
+              <div className="record-group-header">
+                <h2 className="record-group-title">
+                  {group[0]?.title || `Content ${kekenetId}`}
+                </h2>
+                <button
+                  onClick={() => handleDeleteGroup(kekenetId, group[0]?.title || '')}
+                  className="delete-button"
+                  title="Delete all records in this group"
+                >
+                  Delete Group
+                </button>
+              </div>
               {group[0]?.description && (
                 <div className="record-group-description">
                   <p>{group[0].description}</p>

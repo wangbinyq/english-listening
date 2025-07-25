@@ -161,6 +161,17 @@ class DatabaseService {
     );
   }
 
+  async deleteRecordsByKekenetId(kekenetId: string): Promise<void> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
+    await this.db!.query(
+      'DELETE FROM dictation_records WHERE kekenet_id = $1',
+      [kekenetId]
+    );
+  }
+
   private generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
