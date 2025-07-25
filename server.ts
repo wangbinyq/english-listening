@@ -1,4 +1,4 @@
-import { serve } from "bun";
+import { serveDir } from "jsr:@std/http";
 
 interface KekenetRequest {
   Method: string;
@@ -94,62 +94,59 @@ const extractContentFromData = (data: KekenetResponse): { audioUrl: string; orig
   };
 };
 
-serve({
-  port: 3001,
-  async fetch(req) {
-    const url = new URL(req.url);
+// Start the server
+Deno.serve(async (req: Request) => {
+  const url = new URL(req.url);
+  const pathname = url.pathname;
 
-    // Handle /api/fetch endpoint
-    if (url.pathname === "/api/fetch" && req.method === "GET") {
-      const targetUrl = url.searchParams.get("url");
+  // Handle API requests
+  if (pathname.startsWith("/api/fetch") && req.method === "GET") {
+    const targetUrl = url.searchParams.get("url");
 
-      if (!targetUrl) {
-        return new Response(
-          JSON.stringify({ error: "Missing 'url' parameter" }),
-          {
-            status: 400,
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-      }
-
-      try {
-        // Extract ID from URL (assuming format like https://www.kekenet.com/broadcast/202503/704573.shtml)
-        const pathParts = targetUrl.split('/');
-        const id = pathParts[pathParts.length - 1].replace('.shtml', '');
-
-        if (!id) {
-          throw new Error('Could not extract ID from URL');
+    if (!targetUrl) {
+      return new Response(
+        JSON.stringify({ error: "Missing 'url' parameter" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
         }
-
-        // Fetch data from kekenet API
-        const data = await fetchKekenetContent(id);
-
-        // Extract audio URL and text
-        const { audioUrl, originalText, title, description } = extractContentFromData(data);
-
-        return new Response(
-          JSON.stringify({ audioUrl, originalText, title, description }),
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-      } catch (error) {
-        return new Response(
-          JSON.stringify({ error: "Failed to fetch content", details: (error as Error).message }),
-          {
-            status: 500,
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-      }
+      );
     }
 
-    // Default response for other routes
-    return new Response("Bun server is running! Use /api/fetch?url={url} to fetch content.", {
-      headers: { "Content-Type": "text/plain" },
-    });
-  },
-});
+    try {
+      // Extract ID from URL (assuming format like https://www.kekenet.com/broadcast/202503/704573.shtml)
+      const pathParts = targetUrl.split('/');
+      const id = pathParts[pathParts.length - 1].replace('.shtml', '');
 
-console.log("Bun server running on http://localhost:3001");
+      if (!id) {
+        throw new Error('Could not extract ID from URL');
+      }
+
+      // Fetch data from kekenet API
+      const data = await fetchKekenetContent(id);
+
+      // Extract audio URL and text
+      const { audioUrl, originalText, title, description } = extractContentFromData(data);
+
+      return new Response(
+        JSON.stringify({ audioUrl, originalText, title, description }),
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    } catch (error) {
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch content", details: (error as Error).message }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+  }
+
+  // Serve static files for all other routes
+  return serveDir(req, {
+    fsRoot: "dist",
+  });
+});

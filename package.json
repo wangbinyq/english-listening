@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "bun run server.ts"
+    "server": "deno run --allow-net --allow-read server.ts",
+    "server:dev": "deno run --allow-net --allow-read --watch server.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.3.5",
@@ -22,7 +23,6 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.2",
-    "bun-types": "^1.2.19",
     "eslint": "^9.29.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
