@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { dbService } from '../services/database';
 import type { DictationRecord } from '../types';
+import { DiffResultDialog } from '../components/DiffResultDialog';
 
 export const HistoryPage = () => {
   const navigate = useNavigate();
   const [records, setRecords] = useState<DictationRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedRecord, setSelectedRecord] = useState<DictationRecord | null>(null);
 
   useEffect(() => {
     loadRecords();
@@ -155,6 +157,12 @@ export const HistoryPage = () => {
                       >
                         Delete
                       </button>
+                      <button
+                        onClick={() => setSelectedRecord(record)}
+                        className="show-diff-button"
+                      >
+                        Show Diff
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -162,6 +170,15 @@ export const HistoryPage = () => {
             </div>
           ))}
         </div>
+      )}
+      {selectedRecord && (
+        <DiffResultDialog
+          isOpen={!!selectedRecord}
+          originalText={selectedRecord.originalText}
+          userText={selectedRecord.userText}
+          score={selectedRecord.score}
+          onClose={() => setSelectedRecord(null)}
+        />
       )}
     </div>
   );
