@@ -16,6 +16,7 @@ export const DictationPage = () => {
   const [description, setDescription] = useState('');
   const [userText, setUserText] = useState('');
   const [score, setScore] = useState<number | null>(null);
+  const [timeSpent, setTimeSpent] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showOriginal, setShowOriginal] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
@@ -82,6 +83,7 @@ export const DictationPage = () => {
       setScore(null); // Reset score when loading new content
       setUserText(''); // Clear user text when loading new content
       setDiffView(null); // Clear diff view when loading new content
+      setTimeSpent(null); // Reset timeSpent when loading new content
       resetTimer(); // Reset timer when loading new content
 
       // Extract and set kekenet ID
@@ -107,6 +109,10 @@ export const DictationPage = () => {
       const diffResult = generateDiffView(originalText, userText);
       setDiffView(diffResult);
 
+      // Capture the time spent before resetting the timer
+      const timeSpent = totalTime;
+      setTimeSpent(timeSpent);
+
       // Save to database
       const record: Omit<DictationRecord, 'id'> = {
         kekenetId: kekenetId || '',
@@ -114,15 +120,16 @@ export const DictationPage = () => {
         originalText,
         userText,
         score: calculatedScore,
-        timeSpent: totalTime,
+        timeSpent: timeSpent,
         createdAt: new Date(),
         title,
         description
       };
-      resetTimer();
 
       await dbService.addRecord(record);
-      // Reset the timer after submission
+
+      // Reset the timer after submission and saving the record
+      resetTimer();
     } catch (err) {
       console.error('Error submitting dictation:', err);
       setError('Failed to submit dictation. Please try again.');
@@ -243,7 +250,7 @@ export const DictationPage = () => {
           <div className='inputTitle'>
             <label htmlFor="userText">Your Transcription:</label>
             {
-              totalTime > 0 && <span className='timeSpent'>Time Spent: {formatTime(totalTime)}</span>
+              (totalTime > 0 || timeSpent !== null) && <span className='timeSpent'>Time Spent: {formatTime(timeSpent !== null ? timeSpent : totalTime)}</span>
             }
           </div>
           <textarea
@@ -267,7 +274,7 @@ export const DictationPage = () => {
       {score !== null && (
         <div className="score-display">
           <h2>Score: {score.toFixed(2)}%</h2>
-          <p>Time spent: {formatTime(totalTime)}</p>
+          <p>Time spent: {formatTime(timeSpent || totalTime)}</p>
         </div>
       )}
 
