@@ -48,7 +48,7 @@ export function calculateTextSimilarity(originalText: string, userText: string):
  */
 export function extractWords(text: string): string[] {
   // Convert to lowercase and extract words (sequences of letters)
-  return text.toLowerCase().match(/[0-9a-z]+/g) || [];
+  return text.toLowerCase().match(/[0-9'a-z]+/g) || [];
 }
 
 /**
