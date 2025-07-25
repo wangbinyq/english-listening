@@ -81,6 +81,9 @@ export const DictationPage = () => {
       setShowOriginal(false); // Hide original text when loading new content
       setScore(null); // Reset score when loading new content
       setUserText(''); // Clear user text when loading new content
+      setDiffView(null); // Clear diff view when loading new content
+      resetTimer(); // Reset timer when loading new content
+      stop(); // Stop audio player when loading new content
 
       // Extract and set kekenet ID
       const id = extractKekenetId(url);
