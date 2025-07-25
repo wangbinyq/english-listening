@@ -1,4 +1,4 @@
-import { serveDir } from "jsr:@std/http";
+import { serveDir, serveFile } from "jsr:@std/http";
 
 interface KekenetRequest {
   Method: string;
@@ -146,7 +146,13 @@ Deno.serve(async (req: Request) => {
   }
 
   // Serve static files for all other routes
-  return serveDir(req, {
+  const res = await serveDir(req, {
     fsRoot: "dist",
   });
+
+  if (res.status === 404) {
+    return serveFile(req, "dist/index.html");
+  }
+
+  return res
 });
