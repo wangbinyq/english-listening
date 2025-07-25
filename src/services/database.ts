@@ -60,17 +60,6 @@ class DatabaseService {
         )
       `);
 
-      // Add kekenet_id column if it doesn't exist (for existing databases)
-      try {
-        await this.db.query(`
-          ALTER TABLE dictation_records
-          ADD COLUMN IF NOT EXISTS kekenet_id TEXT NOT NULL DEFAULT ''
-        `);
-      } catch (error) {
-        // Column might already exist, which is fine
-        console.debug('kekenet_id column already exists or error adding it:', error);
-      }
-
       this.initialized = true;
     } catch (error) {
       console.error('Failed to initialize database:', error);

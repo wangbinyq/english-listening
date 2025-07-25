@@ -43,12 +43,13 @@ export const DictationPage = () => {
   useEffect(() => {
     // Check if there's state passed from the history page
     if (location.state) {
-      const { audioUrl, originalText, title, description } = location.state;
+      const { audioUrl, originalText, title, description, kekenetId } = location.state;
       if (audioUrl && originalText) {
         setAudioUrl(audioUrl);
         setOriginalText(originalText);
         setTitle(title || '');
         setDescription(description || '');
+        setKekenetId(kekenetId || null);
         loadAudio(audioUrl);
       }
     }

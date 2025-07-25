@@ -26,8 +26,8 @@ export const HistoryPage = () => {
     }
   };
 
-  // Group records by kekenet ID (extracted from the record ID)
-  const groupRecordsByKekenetId = (records: DictationRecord[]): Record<string, DictationRecord[]> => {
+  // Group records by kekenet ID and sort groups by the most recent record's creation date
+  const groupRecordsByKekenetId = (records: DictationRecord[]): { kekenetId: string, group: DictationRecord[] }[] => {
     const grouped: Record<string, DictationRecord[]> = {};
 
     records.forEach(record => {
@@ -45,7 +45,20 @@ export const HistoryPage = () => {
       grouped[key].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     });
 
-    return grouped;
+    // Convert to array and sort groups by the most recent record's creation date
+    const groupedArray = Object.entries(grouped).map(([kekenetId, group]) => ({
+      kekenetId,
+      group
+    }));
+
+    // Sort groups by the creation date of the most recent record in each group (newest first)
+    groupedArray.sort((a, b) => {
+      const aLatest = a.group[0].createdAt.getTime();
+      const bLatest = b.group[0].createdAt.getTime();
+      return bLatest - aLatest;
+    });
+
+    return groupedArray;
   };
 
   const handleDelete = async (id: string) => {
@@ -67,7 +80,8 @@ export const HistoryPage = () => {
         audioUrl: record.audioUrl,
         originalText: record.originalText,
         title: record.title,
-        description: record.description
+        description: record.description,
+        kekenetId: record.kekenetId
       }
     });
   };
@@ -107,7 +121,7 @@ export const HistoryPage = () => {
         <p>No dictation records found.</p>
       ) : (
         <div className="records-list">
-          {Object.entries(groupedRecords).map(([kekenetId, group]) => (
+          {groupedRecords.map(({ kekenetId, group }) => (
             <div key={kekenetId} className="record-group">
               <h2 className="record-group-title">
                 {group[0]?.title || `Content ${kekenetId}`}
