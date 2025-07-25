@@ -15,8 +15,26 @@ interface DictationRecordRow {
 class DatabaseService {
   private db: PGlite | null = null;
   private initialized = false;
+  private initializingPromise: Promise<void> | null = null;
 
   async initialize(): Promise<void> {
+    // If already initialized, return immediately
+    if (this.initialized) {
+      return;
+    }
+
+    // If initialization is in progress, wait for it to complete
+    if (this.initializingPromise) {
+      return this.initializingPromise;
+    }
+
+    // Start initialization and store the promise
+    this.initializingPromise = this.performInitialization();
+    return this.initializingPromise;
+  }
+
+  private async performInitialization(): Promise<void> {
+    // Double-check if already initialized (in case of race conditions)
     if (this.initialized) {
       return;
     }
@@ -43,6 +61,8 @@ class DatabaseService {
       this.initialized = true;
     } catch (error) {
       console.error('Failed to initialize database:', error);
+      // Reset initializing promise on error so it can be retried
+      this.initializingPromise = null;
       throw error;
     }
   }

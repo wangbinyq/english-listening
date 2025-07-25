@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { useContentExtractor } from '../hooks/useContentExtractor';
 import { calculateTextSimilarity, generateDiffView } from '../utils/textDiff';
@@ -6,6 +7,7 @@ import { dbService } from '../services/database';
 import type { DictationRecord } from '../types';
 
 export const DictationPage = () => {
+  const location = useLocation();
   const [url, setUrl] = useState('');
   const [audioUrl, setAudioUrl] = useState('');
   const [originalText, setOriginalText] = useState('');
@@ -36,6 +38,20 @@ export const DictationPage = () => {
   const { extractContent, isLoading, error, setError } = useContentExtractor();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    // Check if there's state passed from the history page
+    if (location.state) {
+      const { audioUrl, originalText, title, description } = location.state;
+      if (audioUrl && originalText) {
+        setAudioUrl(audioUrl);
+        setOriginalText(originalText);
+        setTitle(title || '');
+        setDescription(description || '');
+        loadAudio(audioUrl);
+      }
+    }
+  }, [location.state]);
 
   const handleLoadContent = async () => {
     const extracted = await extractContent(url);

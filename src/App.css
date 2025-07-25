@@ -395,6 +395,7 @@
 .record-score {
   font-size: 1.2rem;
   font-weight: 500;
+  margin: 0 3rem;
 }
 
 .record-date {
@@ -423,6 +424,21 @@
 
 .record-actions {
   text-align: right;
+}
+
+.redo-button {
+  padding: 0.5rem 1rem;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.25s;
+  margin-right: 0.5rem;
+}
+
+.redo-button:hover {
+  background-color: #1976d2;
 }
 
 .delete-button {
@@ -478,17 +494,17 @@
 }
 
 .diff-delete {
-  background-color: #ffebee;
-  color: #c62828;
-  text-decoration: line-through;
-  padding: 0.1rem 0.2rem;
-  border-radius: 0.2rem;
-}
-
-.diff-insert {
   background-color: #e8f5e9;
   color: #2e7d32;
   padding: 0.1rem 0.2rem;
   border-radius: 0.2rem;
   font-weight: 500;
+}
+
+.diff-insert {
+  background-color: #ffebee;
+  color: #c62828;
+  text-decoration: line-through;
+  padding: 0.1rem 0.2rem;
+  border-radius: 0.2rem;
 }

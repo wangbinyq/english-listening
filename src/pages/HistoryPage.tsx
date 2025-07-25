@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { dbService } from '../services/database';
-import { generateDiffView } from '../utils/textDiff';
 import type { DictationRecord } from '../types';
 
 export const HistoryPage = () => {
+  const navigate = useNavigate();
   const [records, setRecords] = useState<DictationRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +36,18 @@ export const HistoryPage = () => {
         setError('Failed to delete record');
       }
     }
+  };
+
+  const handleRedo = (record: DictationRecord) => {
+    // Navigate to the dictation page with the record data
+    navigate('/', {
+      state: {
+        audioUrl: record.audioUrl,
+        originalText: record.originalText,
+        title: record.title,
+        description: record.description
+      }
+    });
   };
 
   const formatDate = (date: Date): string => {
@@ -89,31 +102,13 @@ export const HistoryPage = () => {
                 </div>
               )}
 
-              <div className="record-content">
-                <div className="diff-view">
-                  <h3>Text Comparison</h3>
-                  <div className="diff-container">
-                    <div className="diff-original">
-                      <h4>Original Text:</h4>
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: generateDiffView(record.originalText, record.userText).originalDiff
-                        }}
-                      />
-                    </div>
-                    <div className="diff-user">
-                      <h4>Your Transcription:</h4>
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: generateDiffView(record.originalText, record.userText).userDiff
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               <div className="record-actions">
+                <button
+                  onClick={() => handleRedo(record)}
+                  className="redo-button"
+                >
+                  Redo
+                </button>
                 <button
                   onClick={() => handleDelete(record.id)}
                   className="delete-button"
