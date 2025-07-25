@@ -83,7 +83,6 @@ export const DictationPage = () => {
       setUserText(''); // Clear user text when loading new content
       setDiffView(null); // Clear diff view when loading new content
       resetTimer(); // Reset timer when loading new content
-      stop(); // Stop audio player when loading new content
 
       // Extract and set kekenet ID
       const id = extractKekenetId(url);
@@ -120,11 +119,10 @@ export const DictationPage = () => {
         title,
         description
       };
+      resetTimer();
 
       await dbService.addRecord(record);
-
       // Reset the timer after submission
-      resetTimer();
     } catch (err) {
       console.error('Error submitting dictation:', err);
       setError('Failed to submit dictation. Please try again.');
@@ -261,6 +259,7 @@ export const DictationPage = () => {
             }}
             placeholder="Type what you hear here"
             rows={5}
+            disabled={score !== null}
           />
         </div>
       </div>
