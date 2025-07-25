@@ -239,7 +239,12 @@ export const DictationPage = () => {
         )}
 
         <div className="input-group">
-          <label htmlFor="userText">Your Transcription:</label>
+          <div className='inputTitle'>
+            <label htmlFor="userText">Your Transcription:</label>
+            {
+              totalTime && <span className='timeSpent'>Time Spent: {formatTime(totalTime)}</span>
+            }
+          </div>
           <textarea
             ref={textareaRef}
             id="userText"

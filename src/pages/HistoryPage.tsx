@@ -150,11 +150,11 @@ export const HistoryPage = () => {
                         {formatDate(record.createdAt)}
                       </div>
                     </div>
-                    <div className="record-time">
-                      <span className="time-label">Time:</span>
-                      <span className="time-value">{formatTime(record.timeSpent)}</span>
-                    </div>
                     <div className="record-actions">
+                      <div className="record-time">
+                        <span className="time-label">Time:</span>
+                        <span className="time-value">{formatTime(record.timeSpent)}</span>
+                      </div>
                       <button
                         onClick={() => handleRedo(record)}
                         className="redo-button"
@@ -171,7 +171,7 @@ export const HistoryPage = () => {
                         onClick={() => setSelectedRecord(record)}
                         className="show-diff-button"
                       >
-                        Show Diff
+                        Result
                       </button>
                     </div>
                   </div>
