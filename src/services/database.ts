@@ -22,8 +22,8 @@ class DatabaseService {
     }
 
     try {
-      // Initialize the database
-      this.db = new PGlite();
+      // Initialize the database with IndexedDB persistence
+      this.db = new PGlite('idb://my-pgdata');
       await this.db.waitReady;
 
       // Create the dictation_records table
