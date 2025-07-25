@@ -1,28 +1,23 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { DictationPage } from './pages/DictationPage'
 import { HistoryPage } from './pages/HistoryPage'
+import { DictationProvider } from './contexts/DictationProvider'
+import { Navigation } from './components/Navigation'
 import './App.css'
 
 function App() {
   return (
     <Router>
-      <div className="App">
-        <nav className="navigation">
-          <ul>
-            <li>
-              <Link to="/">Dictation</Link>
-            </li>
-            <li>
-              <Link to="/history">History</Link>
-            </li>
-          </ul>
-        </nav>
+      <DictationProvider>
+        <div className="App">
+          <Navigation />
 
-        <Routes>
-          <Route path="/" element={<DictationPage />} />
-          <Route path="/history" element={<HistoryPage />} />
-        </Routes>
-      </div>
+          <Routes>
+            <Route path="/" element={<DictationPage />} />
+            <Route path="/history" element={<HistoryPage />} />
+          </Routes>
+        </div>
+      </DictationProvider>
     </Router>
   )
 }

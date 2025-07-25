@@ -3,12 +3,14 @@ import { useLocation } from 'react-router-dom';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { useContentExtractor } from '../hooks/useContentExtractor';
 import { useDictationTimer } from '../hooks/useDictationTimer';
+import { useDictationContext } from '../hooks/useDictationContext';
 import { calculateTextSimilarity, generateDiffView } from '../utils/textDiff';
 import { dbService } from '../services/database';
 import type { DictationRecord } from '../types';
 
 export const DictationPage = () => {
   const location = useLocation();
+  const { setIsDictationInProgress } = useDictationContext();
   const [url, setUrl] = useState('');
   const [audioUrl, setAudioUrl] = useState('');
   const [originalText, setOriginalText] = useState('');
@@ -43,6 +45,17 @@ export const DictationPage = () => {
   const { extractContent, isLoading, error, setError } = useContentExtractor();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Determine if dictation is in progress
+  useEffect(() => {
+    const inProgress = Boolean(
+      audioUrl &&
+      originalText &&
+      (isRunning || totalTime > 0) &&
+      score === null
+    );
+    setIsDictationInProgress(inProgress);
+  }, [audioUrl, originalText, isRunning, totalTime, score, setIsDictationInProgress]);
 
   useEffect(() => {
     // Check if there's state passed from the history page
