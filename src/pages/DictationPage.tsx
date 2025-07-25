@@ -13,16 +13,21 @@ export const DictationPage = () => {
   const [score, setScore] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showOriginal, setShowOriginal] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   const {
     isPlaying,
     currentTime,
     duration,
+    isRepeat,
+    repeatTime,
     loadAudio,
     play,
     pause,
     stop,
-    seek
+    seek,
+    toggleRepeat,
+    setRepeatTime
   } = useAudioPlayer();
 
   const { extractContent, isLoading, error, setError } = useContentExtractor();
@@ -119,6 +124,24 @@ export const DictationPage = () => {
               {isPlaying ? 'Pause' : 'Play'}
             </button>
             <button onClick={stop}>Stop</button>
+            <button
+              onClick={toggleRepeat}
+              className={isRepeat ? 'repeat-active' : 'repeat-inactive'}
+            >
+              {isRepeat ? 'Repeat On' : 'Repeat Off'}
+            </button>
+            <div className="repeat-time-control">
+              <label htmlFor="repeatTime">Repeat Time (s):</label>
+              <input
+                type="number"
+                id="repeatTime"
+                min="1"
+                max="30"
+                value={repeatTime}
+                onChange={(e) => setRepeatTime(Number(e.target.value))}
+              />
+            </div>
+            <button onClick={() => setShowHelp(true)}>Help</button>
 
             <div className="seek-container">
               <span>{formatTime(currentTime)}</span>
@@ -192,6 +215,22 @@ export const DictationPage = () => {
           </button>
         )}
       </div>
+
+      {showHelp && (
+        <div className="help-dialog">
+          <div className="help-content">
+            <h2>Keyboard Shortcuts</h2>
+            <ul>
+              <li><strong>Alt + J</strong>: Skip backward 3 seconds</li>
+              <li><strong>Alt + K</strong>: Skip forward 3 seconds</li>
+              <li><strong>Alt + H</strong>: Skip backward 5 seconds</li>
+              <li><strong>Alt + L</strong>: Skip forward 5 seconds</li>
+              <li><strong>Alt + N</strong>: Toggle repeat mode</li>
+            </ul>
+            <button onClick={() => setShowHelp(false)}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

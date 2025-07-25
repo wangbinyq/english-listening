@@ -109,8 +109,7 @@ serve({
 
       try {
         // Extract ID from URL (assuming format like https://www.kekenet.com/broadcast/202503/704573.shtml)
-        const urlObj = new URL(targetUrl);
-        const pathParts = urlObj.pathname.split('/');
+        const pathParts = targetUrl.split('/');
         const id = pathParts[pathParts.length - 1].replace('.shtml', '');
 
         if (!id) {
