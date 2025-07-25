@@ -54,7 +54,7 @@ class DatabaseService {
           original_text TEXT NOT NULL,
           user_text TEXT NOT NULL,
           score REAL NOT NULL,
-          created_at TIMESTAMP NOT NULL,
+          created_at TIMESTAMP WITH TIME ZONE NOT NULL,
           title TEXT NOT NULL DEFAULT '',
           description TEXT NOT NULL DEFAULT ''
         )
