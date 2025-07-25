@@ -78,6 +78,7 @@
 /* Dictation Page Styles */
 .dictation-page {
   max-width: 100%;
+  min-width: 1080px;
   margin: 0 auto;
   padding: 0 2rem;
 }
@@ -274,6 +275,10 @@
   align-items: center;
   gap: 0.5rem;
   width: 100%;
+}
+
+.seek-container span:first {
+  width: 4em;
 }
 
 .seek-bar {
