@@ -108,7 +108,7 @@ export const useAudioPlayer = () => {
       audio.removeEventListener('ended', handleEnded);
       audio.pause();
     };
-  }, []);
+  }, [audioState]);
 
   const loadAudio = (url: string) => {
     if (audioRef.current) {
@@ -240,7 +240,7 @@ export const useAudioPlayer = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [audioState.duration]);
+  }, [audioState.duration, audioState.isRepeat]);
 
   return {
     ...audioState,
