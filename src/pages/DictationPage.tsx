@@ -19,6 +19,7 @@ export const DictationPage = () => {
   const [showOriginal, setShowOriginal] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [diffView, setDiffView] = useState<{ originalDiff: string; userDiff: string } | null>(null);
+  const [kekenetId, setKekenetId] = useState<string | null>(null);
 
   const {
     isPlaying,
@@ -53,6 +54,18 @@ export const DictationPage = () => {
     }
   }, [location.state]);
 
+  const extractKekenetId = (url: string): string | null => {
+    try {
+      // Extract ID from URL (assuming format like https://www.kekenet.com/broadcast/202503/704573.shtml)
+      const pathParts = url.split('/');
+      const id = pathParts[pathParts.length - 1].replace('.shtml', '');
+      return id ? id : null;
+    } catch (error) {
+      console.error('Error extracting kekenet ID:', error);
+      return null;
+    }
+  };
+
   const handleLoadContent = async () => {
     const extracted = await extractContent(url);
     if (extracted) {
@@ -64,6 +77,10 @@ export const DictationPage = () => {
       setShowOriginal(false); // Hide original text when loading new content
       setScore(null); // Reset score when loading new content
       setUserText(''); // Clear user text when loading new content
+
+      // Extract and set kekenet ID
+      const id = extractKekenetId(url);
+      setKekenetId(id);
     }
   };
 
@@ -95,7 +112,7 @@ export const DictationPage = () => {
         description
       };
 
-      await dbService.addRecord(record);
+      await dbService.addRecord(record, kekenetId || undefined);
     } catch (err) {
       console.error('Error submitting dictation:', err);
       setError('Failed to submit dictation. Please try again.');

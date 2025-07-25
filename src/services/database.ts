@@ -67,21 +67,30 @@ class DatabaseService {
     }
   }
 
-  async addRecord(record: Omit<DictationRecord, 'id'>): Promise<string> {
+  async addRecord(record: Omit<DictationRecord, 'id'>, id?: string): Promise<string> {
     if (!this.initialized) {
       await this.initialize();
     }
 
-    const id = this.generateId();
+    const recordId = id || this.generateId();
     const createdAt = new Date().toISOString();
 
+    // Use INSERT ... ON CONFLICT to handle existing records with the same ID
     await this.db!.query(
       `INSERT INTO dictation_records (id, audio_url, original_text, user_text, score, created_at, title, description)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-      [id, record.audioUrl, record.originalText, record.userText, record.score, createdAt, record.title, record.description]
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       ON CONFLICT (id) DO UPDATE SET
+         audio_url = EXCLUDED.audio_url,
+         original_text = EXCLUDED.original_text,
+         user_text = EXCLUDED.user_text,
+         score = EXCLUDED.score,
+         created_at = EXCLUDED.created_at,
+         title = EXCLUDED.title,
+         description = EXCLUDED.description`,
+      [recordId, record.audioUrl, record.originalText, record.userText, record.score, createdAt, record.title, record.description]
     );
 
-    return id;
+    return recordId;
   }
 
   async getRecords(): Promise<DictationRecord[]> {

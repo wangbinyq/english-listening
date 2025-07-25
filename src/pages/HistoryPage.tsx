@@ -26,6 +26,29 @@ export const HistoryPage = () => {
     }
   };
 
+  // Group records by kekenet ID (extracted from the record ID)
+  const groupRecordsByKekenetId = (records: DictationRecord[]): Record<string, DictationRecord[]> => {
+    const grouped: Record<string, DictationRecord[]> = {};
+
+    records.forEach(record => {
+      // Extract kekenet ID from record ID (assuming record ID is the kekenet ID)
+      const kekenetId = record.id;
+
+      if (!grouped[kekenetId]) {
+        grouped[kekenetId] = [];
+      }
+
+      grouped[kekenetId].push(record);
+    });
+
+    // Sort each group by creation date (newest first)
+    Object.keys(grouped).forEach(key => {
+      grouped[key].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    });
+
+    return grouped;
+  };
+
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this record?')) {
       try {
@@ -75,6 +98,8 @@ export const HistoryPage = () => {
     );
   }
 
+  const groupedRecords = groupRecordsByKekenetId(records);
+
   return (
     <div className="history-page">
       <h1>Dictation History</h1>
@@ -83,38 +108,43 @@ export const HistoryPage = () => {
         <p>No dictation records found.</p>
       ) : (
         <div className="records-list">
-          {records.map(record => (
-            <div key={record.id} className="record-item">
-              <div className="record-header">
-                <div className="record-title">
-                  <h3>{record.title}</h3>
-                </div>
-                <div className="record-score">
-                  Score: <strong>{record.score.toFixed(2)}%</strong>
-                </div>
-                <div className="record-date">
-                  {formatDate(record.createdAt)}
-                </div>
-              </div>
-              {record.description && (
-                <div className="record-description">
-                  <p>{record.description}</p>
+          {Object.entries(groupedRecords).map(([kekenetId, group]) => (
+            <div key={kekenetId} className="record-group">
+              <h2 className="record-group-title">
+                {group[0]?.title || `Content ${kekenetId}`}
+              </h2>
+              {group[0]?.description && (
+                <div className="record-group-description">
+                  <p>{group[0].description}</p>
                 </div>
               )}
-
-              <div className="record-actions">
-                <button
-                  onClick={() => handleRedo(record)}
-                  className="redo-button"
-                >
-                  Redo
-                </button>
-                <button
-                  onClick={() => handleDelete(record.id)}
-                  className="delete-button"
-                >
-                  Delete
-                </button>
+              <div className="record-group-items">
+                {group.map(record => (
+                  <div key={record.id} className="record-item">
+                    <div className="record-header">
+                      <div className="record-score">
+                        Score: <strong>{record.score.toFixed(2)}%</strong>
+                      </div>
+                      <div className="record-date">
+                        {formatDate(record.createdAt)}
+                      </div>
+                    </div>
+                    <div className="record-actions">
+                      <button
+                        onClick={() => handleRedo(record)}
+                        className="redo-button"
+                      >
+                        Redo
+                      </button>
+                      <button
+                        onClick={() => handleDelete(record.id)}
+                        className="delete-button"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           ))}
