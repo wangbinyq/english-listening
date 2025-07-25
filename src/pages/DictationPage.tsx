@@ -226,6 +226,7 @@ export const DictationPage = () => {
               <li><strong>Alt + H</strong>: Skip backward 5 seconds</li>
               <li><strong>Alt + L</strong>: Skip forward 5 seconds</li>
               <li><strong>Alt + N</strong>: Toggle repeat mode</li>
+              <li><strong>Alt + P</strong>: Pause/Play</li>
             </ul>
             <button onClick={() => setShowHelp(false)}>Close</button>
           </div>

@@ -72,43 +72,16 @@ export const useAudioPlayer = () => {
     audio.addEventListener('pause', handlePause);
     audio.addEventListener('ended', handleEnded);
 
-    // Check for repeat functionality
-    const handleTimeUpdateForRepeat = () => {
-      if (audioState.isRepeat && audioState.duration > 0) {
-        // If repeatStartTime is null, set it to current time
-        if (audioState.repeatStartTime === null) {
-          setAudioState(prev => ({
-            ...prev,
-            repeatStartTime: prev.currentTime
-          }));
-          return;
-        }
-
-        // Check if we've reached the end of the repeat section
-        const repeatEndTime = Math.min(
-          audioState.repeatStartTime + audioState.repeatTime,
-          audioState.duration
-        );
-
-        if (audio.currentTime >= repeatEndTime) {
-          // Reset to the start of the repeat section
-          audio.currentTime = audioState.repeatStartTime;
-        }
-      }
-    };
-
-    audio.addEventListener('timeupdate', handleTimeUpdateForRepeat);
 
     return () => {
       audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('timeupdate', handleTimeUpdateForRepeat);
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
       audio.removeEventListener('ended', handleEnded);
       audio.pause();
     };
-  }, [audioState]);
+  }, []);
 
   const loadAudio = (url: string) => {
     if (audioRef.current) {
@@ -189,11 +162,15 @@ export const useAudioPlayer = () => {
   };
 
   const toggleRepeat = () => {
-    setAudioState(prev => ({
-      ...prev,
-      isRepeat: !prev.isRepeat
-      // Don't set repeatStartTime here, let the timeupdate handler handle it
-    }));
+    setAudioState(prev => {
+      const newIsRepeat = !prev.isRepeat;
+      return {
+        ...prev,
+        isRepeat: newIsRepeat,
+        // Set repeatStartTime to current time when enabling repeat
+        repeatStartTime: newIsRepeat ? prev.currentTime : null
+      };
+    });
   };
 
   const setRepeatTime = (time: number) => {
@@ -203,7 +180,32 @@ export const useAudioPlayer = () => {
     }));
   };
 
-  // Keyboard event handling
+  // Check for repeat functionality
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleTimeUpdateForRepeat = () => {
+      if (audioState.isRepeat && audioState.duration > 0 && audioState.repeatStartTime !== null) {
+        // Check if we've reached the end of the repeat section
+        const repeatEndTime = Math.min(
+          audioState.repeatStartTime + audioState.repeatTime,
+          audioState.duration
+        );
+
+        if (audio.currentTime >= repeatEndTime) {
+          // Reset to the start of the repeat section
+          audio.currentTime = audioState.repeatStartTime;
+        }
+      }
+    };
+
+    audio.addEventListener('timeupdate', handleTimeUpdateForRepeat);
+
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdateForRepeat);
+    };
+  }, [audioState.isRepeat, audioState.duration, audioState.repeatStartTime, audioState.repeatTime]);
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Only handle shortcuts when audio is loaded
@@ -233,6 +235,14 @@ export const useAudioPlayer = () => {
           e.preventDefault();
           toggleRepeat();
           break;
+        case 'p':
+          e.preventDefault();
+          if (audioState.isPlaying) {
+            pause();
+          } else {
+            play();
+          }
+          break;
       }
     };
 
@@ -240,7 +250,7 @@ export const useAudioPlayer = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [audioState.duration, audioState.isRepeat]);
+  }, [audioState.duration]);
 
   return {
     ...audioState,
