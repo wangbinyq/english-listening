@@ -8,6 +8,7 @@ interface DictationRecordRow {
   original_text: string;
   user_text: string;
   score: number;
+  time_spent: number;
   created_at: string;
   title: string;
   description: string;
@@ -60,6 +61,17 @@ class DatabaseService {
         )
       `);
 
+      // Add time_spent column if it doesn't exist
+      try {
+        await this.db.query(`
+          ALTER TABLE dictation_records
+          ADD COLUMN time_spent REAL NOT NULL DEFAULT 0
+        `);
+      } catch (error) {
+        // Column might already exist, which is fine
+        console.debug('time_spent column might already exist:', error);
+      }
+
       this.initialized = true;
     } catch (error) {
       console.error('Failed to initialize database:', error);
@@ -78,9 +90,9 @@ class DatabaseService {
     const createdAt = new Date().toISOString();
 
     await this.db!.query(
-      `INSERT INTO dictation_records (id, kekenet_id, audio_url, original_text, user_text, score, created_at, title, description)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-      [recordId, record.kekenetId, record.audioUrl, record.originalText, record.userText, record.score, createdAt, record.title, record.description]
+      `INSERT INTO dictation_records (id, kekenet_id, audio_url, original_text, user_text, score, time_spent, created_at, title, description)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+      [recordId, record.kekenetId, record.audioUrl, record.originalText, record.userText, record.score, record.timeSpent || 0, createdAt, record.title, record.description]
     );
 
     return recordId;
@@ -102,6 +114,7 @@ class DatabaseService {
       originalText: row.original_text,
       userText: row.user_text,
       score: row.score,
+      timeSpent: row.time_spent,
       createdAt: new Date(row.created_at),
       title: row.title,
       description: row.description
@@ -130,6 +143,7 @@ class DatabaseService {
       originalText: row.original_text,
       userText: row.user_text,
       score: row.score,
+      timeSpent: row.time_spent,
       createdAt: new Date(row.created_at),
       title: row.title,
       description: row.description

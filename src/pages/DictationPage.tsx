@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { useContentExtractor } from '../hooks/useContentExtractor';
+import { useDictationTimer } from '../hooks/useDictationTimer';
 import { calculateTextSimilarity, generateDiffView } from '../utils/textDiff';
 import { dbService } from '../services/database';
 import type { DictationRecord } from '../types';
@@ -20,6 +21,8 @@ export const DictationPage = () => {
   const [showHelp, setShowHelp] = useState(false);
   const [diffView, setDiffView] = useState<{ originalDiff: string; userDiff: string } | null>(null);
   const [kekenetId, setKekenetId] = useState<string | null>(null);
+
+  const { totalTime, isRunning, start: startTimer, reset: resetTimer } = useDictationTimer();
 
   const {
     isPlaying,
@@ -109,12 +112,16 @@ export const DictationPage = () => {
         originalText,
         userText,
         score: calculatedScore,
+        timeSpent: totalTime,
         createdAt: new Date(),
         title,
         description
       };
 
       await dbService.addRecord(record);
+
+      // Reset the timer after submission
+      resetTimer();
     } catch (err) {
       console.error('Error submitting dictation:', err);
       setError('Failed to submit dictation. Please try again.');
@@ -237,7 +244,13 @@ export const DictationPage = () => {
             ref={textareaRef}
             id="userText"
             value={userText}
-            onChange={(e) => setUserText(e.target.value)}
+            onChange={(e) => {
+              // Start the timer on first keystroke
+              if (!isRunning && !totalTime) {
+                startTimer();
+              }
+              setUserText(e.target.value);
+            }}
             placeholder="Type what you hear here"
             rows={5}
           />
@@ -247,6 +260,7 @@ export const DictationPage = () => {
       {score !== null && (
         <div className="score-display">
           <h2>Score: {score.toFixed(2)}%</h2>
+          <p>Time spent: {formatTime(totalTime)}</p>
         </div>
       )}
 

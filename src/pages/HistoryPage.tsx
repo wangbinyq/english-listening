@@ -92,6 +92,12 @@ export const HistoryPage = () => {
     return new Date(date).toLocaleString();
   };
 
+  const formatTime = (timeInSeconds: number): string => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
   if (loading) {
     return (
       <div className="history-page">
@@ -143,6 +149,10 @@ export const HistoryPage = () => {
                       <div className="record-date">
                         {formatDate(record.createdAt)}
                       </div>
+                    </div>
+                    <div className="record-time">
+                      <span className="time-label">Time:</span>
+                      <span className="time-value">{formatTime(record.timeSpent)}</span>
                     </div>
                     <div className="record-actions">
                       <button

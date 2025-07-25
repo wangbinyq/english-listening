@@ -328,6 +328,13 @@
   background-color: #f0f8ff;
   border-radius: 0.5rem;
   border: 1px solid #646cff;
+  text-align: center;
+}
+
+.score-display p {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+  color: #666;
 }
 
 .error-message {
@@ -436,6 +443,27 @@
 .record-date {
   color: #666;
   font-size: 0.9rem;
+}
+
+.record-time {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background-color: #f0f8ff;
+  border-radius: 0.25rem;
+  border: 1px solid #646cff;
+  display: inline-block;
+  font-size: 0.9rem;
+}
+
+.time-label {
+  font-weight: 500;
+  color: #333;
+  margin-right: 0.5rem;
+}
+
+.time-value {
+  font-weight: 600;
+  color: #646cff;
 }
 
 .record-content {
