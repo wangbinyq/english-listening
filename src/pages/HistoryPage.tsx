@@ -31,8 +31,7 @@ export const HistoryPage = () => {
     const grouped: Record<string, DictationRecord[]> = {};
 
     records.forEach(record => {
-      // Extract kekenet ID from record ID (assuming record ID is the kekenet ID)
-      const kekenetId = record.id;
+      const kekenetId = record.kekenetId;
 
       if (!grouped[kekenetId]) {
         grouped[kekenetId] = [];

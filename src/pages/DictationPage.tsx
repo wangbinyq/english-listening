@@ -103,6 +103,7 @@ export const DictationPage = () => {
 
       // Save to database
       const record: Omit<DictationRecord, 'id'> = {
+        kekenetId: kekenetId || '',
         audioUrl,
         originalText,
         userText,
@@ -112,7 +113,7 @@ export const DictationPage = () => {
         description
       };
 
-      await dbService.addRecord(record, kekenetId || undefined);
+      await dbService.addRecord(record);
     } catch (err) {
       console.error('Error submitting dictation:', err);
       setError('Failed to submit dictation. Please try again.');

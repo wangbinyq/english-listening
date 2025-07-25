@@ -1,5 +1,6 @@
 export interface DictationRecord {
   id: string;
+  kekenetId: string;
   audioUrl: string;
   originalText: string;
   userText: string;

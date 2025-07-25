@@ -3,6 +3,7 @@ import type { DictationRecord } from '../types';
 
 interface DictationRecordRow {
   id: string;
+  kekenet_id: string;
   audio_url: string;
   original_text: string;
   user_text: string;
@@ -48,6 +49,7 @@ class DatabaseService {
       await this.db.query(`
         CREATE TABLE IF NOT EXISTS dictation_records (
           id TEXT PRIMARY KEY,
+          kekenet_id TEXT NOT NULL,
           audio_url TEXT NOT NULL,
           original_text TEXT NOT NULL,
           user_text TEXT NOT NULL,
@@ -58,6 +60,17 @@ class DatabaseService {
         )
       `);
 
+      // Add kekenet_id column if it doesn't exist (for existing databases)
+      try {
+        await this.db.query(`
+          ALTER TABLE dictation_records
+          ADD COLUMN IF NOT EXISTS kekenet_id TEXT NOT NULL DEFAULT ''
+        `);
+      } catch (error) {
+        // Column might already exist, which is fine
+        console.debug('kekenet_id column already exists or error adding it:', error);
+      }
+
       this.initialized = true;
     } catch (error) {
       console.error('Failed to initialize database:', error);
@@ -67,27 +80,18 @@ class DatabaseService {
     }
   }
 
-  async addRecord(record: Omit<DictationRecord, 'id'>, id?: string): Promise<string> {
+  async addRecord(record: Omit<DictationRecord, 'id'>): Promise<string> {
     if (!this.initialized) {
       await this.initialize();
     }
 
-    const recordId = id || this.generateId();
+    const recordId = this.generateId();
     const createdAt = new Date().toISOString();
 
-    // Use INSERT ... ON CONFLICT to handle existing records with the same ID
     await this.db!.query(
-      `INSERT INTO dictation_records (id, audio_url, original_text, user_text, score, created_at, title, description)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-       ON CONFLICT (id) DO UPDATE SET
-         audio_url = EXCLUDED.audio_url,
-         original_text = EXCLUDED.original_text,
-         user_text = EXCLUDED.user_text,
-         score = EXCLUDED.score,
-         created_at = EXCLUDED.created_at,
-         title = EXCLUDED.title,
-         description = EXCLUDED.description`,
-      [recordId, record.audioUrl, record.originalText, record.userText, record.score, createdAt, record.title, record.description]
+      `INSERT INTO dictation_records (id, kekenet_id, audio_url, original_text, user_text, score, created_at, title, description)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      [recordId, record.kekenetId, record.audioUrl, record.originalText, record.userText, record.score, createdAt, record.title, record.description]
     );
 
     return recordId;
@@ -104,6 +108,7 @@ class DatabaseService {
 
     return (result.rows as DictationRecordRow[]).map(row => ({
       id: row.id,
+      kekenetId: row.kekenet_id,
       audioUrl: row.audio_url,
       originalText: row.original_text,
       userText: row.user_text,
@@ -131,6 +136,7 @@ class DatabaseService {
     const row = result.rows[0] as DictationRecordRow;
     return {
       id: row.id,
+      kekenetId: row.kekenet_id,
       audioUrl: row.audio_url,
       originalText: row.original_text,
       userText: row.user_text,
