@@ -16,6 +16,7 @@ interface DictationTimer {
 export const useDictationTimer = (): DictationTimer => {
   const [totalTime, setTotalTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [wasRunning, setWasRunning] = useState(false);
   const startTimeRef = useRef<number | null>(null);
   const accumulatedTimeRef = useRef(0);
   const animationFrameRef = useRef<number>(0);
@@ -49,7 +50,8 @@ export const useDictationTimer = (): DictationTimer => {
         }
       } else {
         // Resume timer when page becomes visible again
-        if (startTimeRef.current !== null && !isRunning) {
+        // We need to restart the timer if it was running before the page was hidden
+        if (wasRunning && !isRunning) {
           start();
         }
       }
@@ -60,7 +62,7 @@ export const useDictationTimer = (): DictationTimer => {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [isRunning]);
+  }, [isRunning, wasRunning]);
 
   const start = () => {
     // Only start if not already running
@@ -70,6 +72,7 @@ export const useDictationTimer = (): DictationTimer => {
         startTimeRef.current = Date.now();
       }
       setIsRunning(true);
+      setWasRunning(true);
     }
   };
 
@@ -83,6 +86,7 @@ export const useDictationTimer = (): DictationTimer => {
         startTimeRef.current = null;
       }
       setIsRunning(false);
+      // Don't change wasRunning here - we want to remember if it was running before hiding
     }
   };
 
@@ -95,6 +99,7 @@ export const useDictationTimer = (): DictationTimer => {
     // Reset all state
     setTotalTime(0);
     setIsRunning(false);
+    setWasRunning(false);
     startTimeRef.current = null;
     accumulatedTimeRef.current = 0;
   };

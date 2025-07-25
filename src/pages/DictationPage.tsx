@@ -242,7 +242,7 @@ export const DictationPage = () => {
           <div className='inputTitle'>
             <label htmlFor="userText">Your Transcription:</label>
             {
-              totalTime && <span className='timeSpent'>Time Spent: {formatTime(totalTime)}</span>
+              totalTime > 0 && <span className='timeSpent'>Time Spent: {formatTime(totalTime)}</span>
             }
           </div>
           <textarea
