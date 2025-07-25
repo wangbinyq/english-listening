@@ -1,5 +1,5 @@
 #root {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -77,8 +77,9 @@
 
 /* Dictation Page Styles */
 .dictation-page {
-  max-width: 800px;
+  max-width: 100%;
   margin: 0 auto;
+  padding: 0 2rem;
 }
 
 .dictation-page h1 {
@@ -340,8 +341,9 @@
 
 /* History Page Styles */
 .history-page {
-  max-width: 800px;
+  max-width: 100%;
   margin: 0 auto;
+  padding: 0 2rem;
 }
 
 .history-page h1 {
@@ -435,4 +437,58 @@
 
 .delete-button:hover {
   background-color: #d32f2f;
+}
+
+/* Diff View Styles */
+.diff-view {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 0.5rem;
+  border: 1px solid #ddd;
+}
+
+.diff-view h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.diff-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.diff-original,
+.diff-user {
+  flex: 1;
+  min-width: 300px;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 0.25rem;
+  border: 1px solid #eee;
+}
+
+.diff-original h4,
+.diff-user h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.diff-delete {
+  background-color: #ffebee;
+  color: #c62828;
+  text-decoration: line-through;
+  padding: 0.1rem 0.2rem;
+  border-radius: 0.2rem;
+}
+
+.diff-insert {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 0.1rem 0.2rem;
+  border-radius: 0.2rem;
+  font-weight: 500;
 }

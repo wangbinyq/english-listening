@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { dbService } from '../services/database';
+import { generateDiffView } from '../utils/textDiff';
 import type { DictationRecord } from '../types';
 
 export const HistoryPage = () => {
@@ -89,14 +90,26 @@ export const HistoryPage = () => {
               )}
 
               <div className="record-content">
-                <div className="record-text">
-                  <h3>Original Text:</h3>
-                  <p>{record.originalText}</p>
-                </div>
-
-                <div className="record-text">
-                  <h3>Your Transcription:</h3>
-                  <p>{record.userText}</p>
+                <div className="diff-view">
+                  <h3>Text Comparison</h3>
+                  <div className="diff-container">
+                    <div className="diff-original">
+                      <h4>Original Text:</h4>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: generateDiffView(record.originalText, record.userText).originalDiff
+                        }}
+                      />
+                    </div>
+                    <div className="diff-user">
+                      <h4>Your Transcription:</h4>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: generateDiffView(record.originalText, record.userText).userDiff
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 

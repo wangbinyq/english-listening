@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useAudioPlayer } from '../hooks/useAudioPlayer';
 import { useContentExtractor } from '../hooks/useContentExtractor';
-import { calculateTextSimilarity } from '../utils/textDiff';
+import { calculateTextSimilarity, generateDiffView } from '../utils/textDiff';
 import { dbService } from '../services/database';
 import type { DictationRecord } from '../types';
 
@@ -16,6 +16,7 @@ export const DictationPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showOriginal, setShowOriginal] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [diffView, setDiffView] = useState<{ originalDiff: string; userDiff: string } | null>(null);
 
   const {
     isPlaying,
@@ -62,6 +63,10 @@ export const DictationPage = () => {
       // Calculate score
       const calculatedScore = calculateTextSimilarity(originalText, userText);
       setScore(calculatedScore);
+
+      // Generate diff view
+      const diffResult = generateDiffView(originalText, userText);
+      setDiffView(diffResult);
 
       // Save to database
       const record: Omit<DictationRecord, 'id'> = {
@@ -210,6 +215,22 @@ export const DictationPage = () => {
       {score !== null && (
         <div className="score-display">
           <h2>Score: {score.toFixed(2)}%</h2>
+        </div>
+      )}
+
+      {diffView && (
+        <div className="diff-view">
+          <h3>Text Comparison</h3>
+          <div className="diff-container">
+            <div className="diff-original">
+              <h4>Original Text:</h4>
+              <div dangerouslySetInnerHTML={{ __html: diffView.originalDiff }} />
+            </div>
+            <div className="diff-user">
+              <h4>Your Transcription:</h4>
+              <div dangerouslySetInnerHTML={{ __html: diffView.userDiff }} />
+            </div>
+          </div>
         </div>
       )}
 
